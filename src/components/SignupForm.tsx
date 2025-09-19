@@ -25,9 +25,9 @@ export default function SignupForm() {
   const form = useForm<TUserSchema>({
     resolver: zodResolver(userSchema),
     defaultValues: {
-      name: 'Yurex12',
-      email: 'yusuf@gmail.com',
-      password: '123456',
+      name: '',
+      email: '',
+      password: '',
     },
   });
   const router = useRouter();
@@ -98,7 +98,7 @@ export default function SignupForm() {
           )}
         />
         <Button type='submit' disabled={form.formState.isSubmitting}>
-          Submit
+          Sign up
         </Button>
       </form>
     </Form>
