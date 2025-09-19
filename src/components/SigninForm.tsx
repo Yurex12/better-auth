@@ -35,23 +35,16 @@ export default function SigninForm() {
           name='email'
           placeholder='johndoe@gmail.com'
           required
-          defaultValue='yusuf20@gmail.com'
         />
       </div>
 
       <div className='space-y-2'>
         <Label>Password</Label>
-        <Input
-          type='password'
-          name='password'
-          placeholder='******'
-          required
-          defaultValue='12345678'
-        />
+        <Input type='password' name='password' placeholder='******' required />
       </div>
 
       <Button type='submit' disabled={isPending}>
-        Submit
+        Login
       </Button>
     </form>
   );

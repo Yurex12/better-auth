@@ -2,12 +2,24 @@
 
 import { headers } from 'next/headers';
 import { auth } from '../auth';
-import { TUserSchema } from '../schemas';
+import { TUserSchema, userSchema } from '../schemas';
+import z from 'zod';
 
-export async function signUp({ name, email, password }: TUserSchema) {
+export async function signUp(userDetails: TUserSchema) {
   try {
+    const validatedFields = userSchema.safeParse(userDetails);
+
+    if (!validatedFields.success) {
+      return {
+        success: false,
+        message: 'Please Enter correct values',
+        errors: z.flattenError(validatedFields.error),
+        data: null,
+      };
+    }
+
     const response = await auth.api.signUpEmail({
-      body: { name, email, password },
+      body: { ...validatedFields.data, callbackURL: '/dashboard' },
     });
 
     return {
