@@ -15,7 +15,7 @@ export default function LogoutButton() {
   const router = useRouter();
 
   function handleLogout() {
-    if (!checkConnection('Internet required to sign out.')) return;
+    if (!checkConnection('Seems your are offline.')) return;
 
     startTransition(async () => {
       const res = await signOut();

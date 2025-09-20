@@ -1,51 +1,92 @@
 'use client';
 
-import { Input } from '@/components/ui/input';
-import { signIn } from '@/lib/actions/auth-actions';
 import { useRouter } from 'next/navigation';
-import { useTransition } from 'react';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+
 import { Button } from './ui/button';
-import { Label } from './ui/label';
+import { Input } from '@/components/ui/input';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from './ui/form';
+
+import { signIn } from '@/lib/actions/auth-actions';
+
+import { loginSchema, TLoginSchema } from '@/lib/schemas';
 
 export default function SigninForm() {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
 
-  function handleLogin(formData: FormData) {
-    startTransition(async () => {
-      const res = await signIn(formData);
+  const form = useForm<TLoginSchema>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
 
-      if (res.success) {
-        toast.success('Login succesful');
-        router.push('/dashboard');
-        router.refresh();
-      } else {
-        toast.error(res.error);
-      }
-    });
+  async function onsubmit(values: TLoginSchema) {
+    const res = await signIn(values);
+
+    if (res.success) {
+      toast.success('Login succesful');
+      form.reset();
+      router.push('/dashboard');
+      router.refresh();
+    } else {
+      toast.error(res.error);
+    }
   }
 
   return (
-    <form className='space-y-8' action={handleLogin}>
-      <div className='space-y-2'>
-        <Label>Email</Label>
-        <Input
-          type='email'
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onsubmit)} className='space-y-8'>
+        <FormField
+          control={form.control}
           name='email'
-          placeholder='johndoe@gmail.com'
-          required
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder='johndoe@gmail.com'
+                  {...field}
+                  disabled={form.formState.isSubmitting}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-
-      <div className='space-y-2'>
-        <Label>Password</Label>
-        <Input type='password' name='password' placeholder='******' required />
-      </div>
-
-      <Button type='submit' disabled={isPending}>
-        Login
-      </Button>
-    </form>
+        <FormField
+          control={form.control}
+          name='password'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder='********'
+                  type='password'
+                  {...field}
+                  disabled={form.formState.isSubmitting}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type='submit' disabled={form.formState.isSubmitting}>
+          Sign in
+        </Button>
+      </form>
+    </Form>
   );
 }

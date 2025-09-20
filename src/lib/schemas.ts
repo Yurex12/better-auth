@@ -14,4 +14,16 @@ export const userSchema = z.object({
     .max(10, 'password should not be more than 10 characters'),
 });
 
+export const loginSchema = z.object({
+  email: z.email('Please enter a valid email'),
+  password: z.string().min(1, 'Password is required'),
+});
+
+export const serverLoginSchema = z.object({
+  email: z.email(),
+  password: z.string().min(8, 'password should be at least 8 characters'),
+});
+
+export type TLoginSchema = z.infer<typeof loginSchema>;
+
 export type TUserSchema = z.infer<typeof userSchema>;

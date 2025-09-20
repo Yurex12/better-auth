@@ -2,7 +2,13 @@
 
 import { headers } from 'next/headers';
 import { auth } from '../auth';
-import { TUserSchema, userSchema } from '../schemas';
+import {
+  loginSchema,
+  serverLoginSchema,
+  TLoginSchema,
+  TUserSchema,
+  userSchema,
+} from '../schemas';
 import z from 'zod';
 
 export async function signUp(userDetails: TUserSchema) {
@@ -13,7 +19,7 @@ export async function signUp(userDetails: TUserSchema) {
       return {
         success: false,
         message: 'Please Enter correct values',
-        errors: z.flattenError(validatedFields.error),
+        error: z.flattenError(validatedFields.error),
         data: null,
       };
     }
@@ -29,7 +35,6 @@ export async function signUp(userDetails: TUserSchema) {
       message: 'Registration successful',
     };
   } catch (err: any) {
-    console.log(err);
     let message =
       err?.body?.error ?? err?.message ?? 'An unexpected error occurred';
 
@@ -45,13 +50,22 @@ export async function signUp(userDetails: TUserSchema) {
     };
   }
 }
-export async function signIn(formData: FormData) {
+export async function signIn(userDetails: TLoginSchema) {
   try {
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
+    const validatedFields = serverLoginSchema.safeParse(userDetails);
+
+    if (!validatedFields.success) {
+      //   console.log(z.flattenError(validatedFields.error));
+      return {
+        success: false,
+        message: 'Email or password is wrong.',
+        error: 'Invalid email or password',
+        data: null,
+      };
+    }
 
     const response = await auth.api.signInEmail({
-      body: { email, password, rememberMe: true },
+      body: { ...validatedFields.data, rememberMe: true },
     });
 
     return {
@@ -61,8 +75,6 @@ export async function signIn(formData: FormData) {
       error: null,
     };
   } catch (err: any) {
-    console.log(err.body);
-
     let message =
       err?.body?.error ?? err?.message ?? 'An unexpected error occurred';
 

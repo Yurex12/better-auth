@@ -54,7 +54,7 @@ export default function SignupForm() {
               <FormLabel>Username</FormLabel>
               <FormControl>
                 <Input
-                  placeholder='username'
+                  placeholder='johndoe'
                   {...field}
                   disabled={form.formState.isSubmitting}
                 />
@@ -71,7 +71,7 @@ export default function SignupForm() {
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input
-                  placeholder='email'
+                  placeholder='johndoe@gmail.com'
                   {...field}
                   disabled={form.formState.isSubmitting}
                 />
@@ -88,7 +88,7 @@ export default function SignupForm() {
               <FormLabel>Password</FormLabel>
               <FormControl>
                 <Input
-                  placeholder='password'
+                  placeholder='********'
                   {...field}
                   disabled={form.formState.isSubmitting}
                 />
