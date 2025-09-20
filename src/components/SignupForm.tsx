@@ -89,6 +89,7 @@ export default function SignupForm() {
               <FormControl>
                 <Input
                   placeholder='********'
+                  type='password'
                   {...field}
                   disabled={form.formState.isSubmitting}
                 />
